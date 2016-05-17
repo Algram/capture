@@ -51,7 +51,7 @@ function capture(item, cb) {
       return _page.open(item.url);
   }).then(status => {
       console.log(status);
-      return _page.property('content')
+      return _page.property('content');
   }).then(content => {
       var filename = item.url.replace(/\//g, '');
       filename = filename.replace(/http:/g, '');
@@ -61,7 +61,7 @@ function capture(item, cb) {
       console.log(filename );
 
       setTimeout(function() {
-        _page.render(path.join(DIR, item.device, filename + '_' + 'KW' + currentWeekNumber() + '_' + new Date().getFullYear() + '_' + item.delay + '.png'));
+        _page.render(path.join(DIR, item.device, filename + '_' + 'KW' + currentWeekNumber() + '_' + new Date().getFullYear() + '_' + item.delay + '.jpeg'), {format: 'jpeg', quality: '95'});
         _page.close();
         _ph.exit();
         cb();
