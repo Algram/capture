@@ -7,6 +7,25 @@ var _ph, _page, _outObj;
 var DIR = 'captures';
 var data;
 
+//Converter Class
+var Converter = require("csvtojson").Converter;
+var converter = new Converter({});
+converter.fromFile("./config.csv",function(err,result){
+  data = result;
+  start();
+});
+
+function start() {
+  async.eachSeries(data, function(item, cb) {
+    capture(item, function() {
+      cb();
+    });
+  },function(e) {
+    if (e) console.log(e);
+    console.log('done');
+  });
+}
+
 function capture(item, cb) {
   phantom.create().then(ph => {
       _ph = ph;
