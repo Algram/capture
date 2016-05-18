@@ -32,9 +32,10 @@ node_modules
 # Optional REPL history
 .node_repl_history
 
-# Exclude config.csv
+# Exclude configs
 config.csv
 .~lock.config.csv#
+config.json
 
 # Exclude capture folder
 captures

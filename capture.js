@@ -9,6 +9,8 @@ var winston = require('winston');
 winston.add(winston.transports.File, { filename: 'capture.log' });
 
 var DIR = 'captures';
+var USERNAME = 'testuser';
+var PASSWORD = 'letstest!?';
 
 function run(data) {
   async.eachSeries(data, function(item, cb) {
@@ -38,25 +40,24 @@ function capture(item, cb) {
       return _ph.createPage();
   }).then(page => {
       _page = page;
+      _page.setting('resourceTimeout', 30000);
 
       if (item.device === 'mobile') {
-        //_page.setting('userAgent', 'Mozilla/5.0 (iPhone; CPU iPhone OS 6_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10A5376e Safari/8536.25');
         _page.property('viewportSize', {width: 480, height: 640});
       } else if (item.device === 'tablet') {
         _page.property('viewportSize', {width: 1024, height: 800});
       } else {
-        //_page.setting('userAgent', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36');
         _page.property('viewportSize', {width: 1920, height: 1080});
       }
 
       if (item.auth) {
-        _page.setting('userName', 'testuser');
-        _page.setting('password', 'letstest!?');
+        _page.setting('userName', USERNAME);
+        _page.setting('password', PASSWORD);
       }
 
       return _page.open(item.url);
   }).then(status => {
-      winston.info(item.url, status)
+      winston.info(item.url, status);
       return _page.property('content');
   }).then(content => {
       setTimeout(function() {
@@ -88,4 +89,4 @@ function getFilename(item) {
 
 module.exports = {
 	run: run
-}
+};
