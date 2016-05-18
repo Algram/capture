@@ -5,24 +5,30 @@ var async = require('async');
 var currentWeekNumber = require('current-week-number');
 var _ph, _page, _outObj;
 
+var winston = require('winston');
+winston.add(winston.transports.File, { filename: 'capture.log' });
+
 var DIR = 'captures';
-var data;
 
 function run(data) {
   async.eachSeries(data, function(item, cb) {
-    exists(getFilename(item), function(answer) {
-      if (!answer) {
+    var filename = getFilename(item);
+    exists(filename, function(doesExist) {
+      if (!doesExist) {
         capture(item, function() {
           cb();
         });
       } else {
-        console.log("file exists already");
+        winston.info('File %s exists already', filename);
         cb();
       }
     });
-  },function(e) {
-    if (e) console.log(e);
-    console.log('done');
+  },function(error) {
+    if (error) {
+      winston.error(error);
+    } else {
+      winston.info('All files processed.');
+    }
   });
 }
 
@@ -50,7 +56,7 @@ function capture(item, cb) {
 
       return _page.open(item.url);
   }).then(status => {
-      console.log(status);
+      winston.info(item.url, status)
       return _page.property('content');
   }).then(content => {
       setTimeout(function() {

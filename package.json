@@ -14,6 +14,7 @@
     "csvtojson": "^0.5.11",
     "current-week-number": "^1.0.7",
     "gulp": "^3.9.1",
-    "phantom": "^2.1.2"
+    "phantom": "^2.1.2",
+    "winston": "^2.2.0"
   }
 }
