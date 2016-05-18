@@ -8,15 +8,7 @@ var _ph, _page, _outObj;
 var DIR = 'captures';
 var data;
 
-//Converter Class
-var Converter = require("csvtojson").Converter;
-var converter = new Converter({});
-converter.fromFile("./config.csv",function(err,result){
-  data = result;
-  start();
-});
-
-function start() {
+function run(data) {
   async.eachSeries(data, function(item, cb) {
     exists(getFilename(item), function(answer) {
       if (!answer) {
@@ -86,4 +78,8 @@ function getFilename(item) {
   filename = filename.replace(/https:/g, '');
 
   return path.join(DIR, item.device, filename, filename + '_' + 'KW' + currentWeekNumber() + '_' + new Date().getFullYear() + '_' + item.delay + '.jpeg');
+}
+
+module.exports = {
+	run: run
 }
