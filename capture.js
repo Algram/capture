@@ -1,3 +1,4 @@
+var config = require('./config.json');
 var phantom = require('phantom');
 var path = require('path');
 var fs = require('fs');
@@ -7,10 +8,6 @@ var _ph, _page, _outObj;
 
 var winston = require('winston');
 winston.add(winston.transports.File, { filename: 'capture.log' });
-
-var DIR = 'captures';
-var USERNAME = 'testuser';
-var PASSWORD = 'letstest!?';
 
 function run(data) {
   async.eachSeries(data, function(item, cb) {
@@ -40,7 +37,7 @@ function capture(item, cb) {
       return _ph.createPage();
   }).then(page => {
       _page = page;
-      _page.setting('resourceTimeout', 30000);
+      _page.setting('resourceTimeout', config.resourceTimeout);
 
       if (item.device === 'mobile') {
         _page.property('viewportSize', {width: 480, height: 640});
@@ -51,8 +48,8 @@ function capture(item, cb) {
       }
 
       if (item.auth) {
-        _page.setting('userName', USERNAME);
-        _page.setting('password', PASSWORD);
+        _page.setting('userName', config.username);
+        _page.setting('password', config.password);
       }
 
       return _page.open(item.url);
@@ -84,7 +81,7 @@ function getFilename(item) {
   filename = filename.replace(/http:/g, '');
   filename = filename.replace(/https:/g, '');
 
-  return path.join(DIR, item.device, filename, filename + '_' + 'KW' + currentWeekNumber() + '_' + new Date().getFullYear() + '_' + item.delay + '.jpeg');
+  return path.join(config.downloadDir, item.device, filename, filename + '_' + 'KW' + currentWeekNumber() + '_' + new Date().getFullYear() + '_' + item.delay + '.jpeg');
 }
 
 module.exports = {

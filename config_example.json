@@ -1,0 +1,6 @@
+{
+    "username": "username",
+    "password": "password",
+    "resourceTimeout": 10000,
+    "downloadDir": "images"
+}
