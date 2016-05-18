@@ -1,5 +1,6 @@
 var phantom = require('phantom');
 var path = require('path');
+var fs = require('fs');
 var async = require('async');
 var currentWeekNumber = require('current-week-number');
 var _ph, _page, _outObj;
@@ -53,18 +54,30 @@ function capture(item, cb) {
       console.log(status);
       return _page.property('content');
   }).then(content => {
-      var filename = item.url.replace(/\//g, '');
-      filename = filename.replace(/http:/g, '');
-      filename = filename.replace(/https:/g, '');
-      //filename = filename.replace(/\./g, '');
-      //filename = filename.replace(/-/g, '');
-      console.log(filename );
-
       setTimeout(function() {
-        _page.render(path.join(DIR, item.device, filename, filename + '_' + 'KW' + currentWeekNumber() + '_' + new Date().getFullYear() + '_' + item.delay + '.jpeg'), {format: 'jpeg', quality: '95'});
+        _page.render(getFilename(item)), {format: 'jpeg', quality: '95'});
         _page.close();
         _ph.exit();
         cb();
       }, item.delay);
   });
+}
+
+function exists(filename) {
+  fs.stat(path, (err, stats) => {
+    if (!stats.isFile(filename)) {
+      //File does not exist
+
+    } else {
+      //File exists
+    }
+  });
+}
+
+function getFilename(item) {
+  var filename = item.url.replace(/\//g, '');
+  filename = filename.replace(/http:/g, '');
+  filename = filename.replace(/https:/g, '');
+
+  return path.join(DIR, item.device, filename, filename + '_' + 'KW' + currentWeekNumber() + '_' + new Date().getFullYear() + '_' + item.delay + '.jpeg');
 }
