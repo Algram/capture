@@ -55,14 +55,19 @@ function capture(item, cb) {
       return _page.open(item.url);
   }).then(status => {
       winston.info(item.url, status);
-      return _page.property('content');
-  }).then(content => {
-      setTimeout(function() {
-        _page.render(getFilename(item), {format: 'jpeg', quality: '95'});
+
+      if (status === 'success') {
+        setTimeout(function() {
+          _page.render(getFilename(item), {format: 'jpeg', quality: '95'});
+          _page.close();
+          _ph.exit();
+          cb();
+        }, (item.delay > config.maxDelay) ? config.maxDelay : item.delay);
+      } else {
         _page.close();
         _ph.exit();
         cb();
-      }, item.delay);
+      }
   });
 }
 
