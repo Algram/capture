@@ -34,7 +34,7 @@ node_modules
 
 # Exclude configs
 config.csv
-.~lock.config.csv#
+.~lock*
 config.json
 
 # Exclude capture folder
