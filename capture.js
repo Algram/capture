@@ -18,8 +18,15 @@ converter.fromFile("./config.csv",function(err,result){
 
 function start() {
   async.eachSeries(data, function(item, cb) {
-    capture(item, function() {
-      cb();
+    exists(getFilename(item), function(answer) {
+      if (!answer) {
+        capture(item, function() {
+          cb();
+        });
+      } else {
+        console.log("file exists already");
+        cb();
+      }
     });
   },function(e) {
     if (e) console.log(e);
@@ -55,7 +62,7 @@ function capture(item, cb) {
       return _page.property('content');
   }).then(content => {
       setTimeout(function() {
-        _page.render(getFilename(item)), {format: 'jpeg', quality: '95'});
+        _page.render(getFilename(item), {format: 'jpeg', quality: '95'});
         _page.close();
         _ph.exit();
         cb();
@@ -63,13 +70,12 @@ function capture(item, cb) {
   });
 }
 
-function exists(filename) {
-  fs.stat(path, (err, stats) => {
-    if (!stats.isFile(filename)) {
-      //File does not exist
-
+function exists(filename, cb) {
+  fs.access(filename, fs.F_OK, (err) => {
+    if (!err) {
+      cb(true);
     } else {
-      //File exists
+      cb(false);
     }
   });
 }
