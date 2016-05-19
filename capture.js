@@ -4,10 +4,9 @@ var path = require('path');
 var fs = require('fs');
 var async = require('async');
 var currentWeekNumber = require('current-week-number');
-var _ph, _page, _outObj;
-
 var winston = require('winston');
-winston.add(winston.transports.File, { filename: 'capture.log' });
+
+winston.add(winston.transports.File, {filename: path.join(config.logDir, 'capture.log')});
 
 function run(data) {
   async.eachSeries(data, function(item, cb) {
@@ -32,6 +31,8 @@ function run(data) {
 }
 
 function capture(item, cb) {
+  var _ph, _page, _outObj;
+
   phantom.create().then(ph => {
       _ph = ph;
       return _ph.createPage();
@@ -40,11 +41,11 @@ function capture(item, cb) {
       _page.setting('resourceTimeout', config.resourceTimeout);
 
       if (item.device === 'mobile') {
-        _page.property('viewportSize', {width: 480, height: 640});
+        _page.property('viewportSize', {width: config.dimensions.mobile.w, height: config.dimensions.mobile.h});
       } else if (item.device === 'tablet') {
-        _page.property('viewportSize', {width: 1024, height: 800});
+        _page.property('viewportSize', {width: config.dimensions.tablet.w, height: config.dimensions.tablet.h});
       } else {
-        _page.property('viewportSize', {width: 1920, height: 1080});
+        _page.property('viewportSize', {width: config.dimensions.desktop.w, height: config.dimensions.desktop.h});
       }
 
       if (item.auth) {
@@ -58,7 +59,7 @@ function capture(item, cb) {
 
       if (status === 'success') {
         setTimeout(function() {
-          _page.render(getFilename(item), {format: 'jpeg', quality: '95'});
+          _page.render(getFilename(item), {format: config.images.format, quality: config.images.quality});
           _page.close();
           _ph.exit();
           cb();
@@ -86,7 +87,7 @@ function getFilename(item) {
   filename = filename.replace(/http:/g, '');
   filename = filename.replace(/https:/g, '');
 
-  return path.join(config.downloadDir, item.device, filename, filename + '_' + 'KW' + currentWeekNumber() + '_' + new Date().getFullYear() + '_' + item.delay + '.jpeg');
+  return path.join(config.downloadDir, item.device, filename, filename + '_' + 'KW' + currentWeekNumber() + '_' + new Date().getFullYear() + '_' + item.delay + '.' + config.images.format);
 }
 
 module.exports = {
