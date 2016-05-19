@@ -7,7 +7,7 @@ gulp.task('update', function() {
   //Converter Class
   var Converter = require("csvtojson").Converter;
   var converter = new Converter({});
-  converter.fromFile("./config.csv",function(err, result){
+  converter.fromFile("./config.csv", function(err, result){
     capture.run(result);
   });
 });

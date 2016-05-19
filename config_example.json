@@ -2,5 +2,25 @@
     "username": "username",
     "password": "password",
     "resourceTimeout": 10000,
-    "downloadDir": "images"
+    "maxDelay": 10000,
+    "images": {
+      "format": "jpeg",
+      "quality": "95"
+    },
+    "dimensions": {
+      "desktop": {
+        "w": 1920,
+        "h": 1080
+      },
+      "tablet": {
+        "w": 1024,
+        "h": 800
+      },
+      "mobile": {
+        "w": 480,
+        "h": 640
+      }
+    },
+    "downloadDir": "images",
+    "logDir": ""
 }
