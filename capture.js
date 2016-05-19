@@ -6,11 +6,20 @@ var async = require('async');
 var currentWeekNumber = require('current-week-number');
 var winston = require('winston');
 
+// Add logfile transport to winston
 winston.add(winston.transports.File, {filename: path.join(config.logDir, 'capture.log')});
 
+/**
+ * Takes an objected based on a csv file and starts the capturing process if
+ * the file doesn't exist already. The execution process is handled by async
+ * in series
+ * @param  {object} data Object based on the converted csv file
+ */
 function run(data) {
   async.eachSeries(data, function(item, cb) {
     var filename = getFilename(item);
+
+    // Check if the file exists already
     exists(filename, function(doesExist) {
       if (!doesExist) {
         capture(item, function() {
@@ -30,6 +39,13 @@ function run(data) {
   });
 }
 
+/**
+ * This captures a website with the help of phantomjs. It sets various things
+ * from the config file and saves the rendered website image to a given
+ * file path
+ * @param  {object}   item Object based on the converted csv file
+ * @param  {Function} cb   callback
+ */
 function capture(item, cb) {
   var _ph, _page, _outObj;
 
@@ -40,6 +56,7 @@ function capture(item, cb) {
       _page = page;
       _page.setting('resourceTimeout', config.resourceTimeout);
 
+      // Set screen sizes based on the config
       if (item.device === 'mobile') {
         _page.property('viewportSize', {width: config.dimensions.mobile.w, height: config.dimensions.mobile.h});
       } else if (item.device === 'tablet') {
@@ -48,6 +65,7 @@ function capture(item, cb) {
         _page.property('viewportSize', {width: config.dimensions.desktop.w, height: config.dimensions.desktop.h});
       }
 
+      // TODO Potentially obsolete if no http-auth is needed
       if (item.auth) {
         _page.setting('userName', config.username);
         _page.setting('password', config.password);
@@ -58,6 +76,7 @@ function capture(item, cb) {
       winston.info(item.url, status);
 
       if (status === 'success') {
+        // Set the delay to call the rendering process
         setTimeout(function() {
           _page.render(getFilename(item), {format: config.images.format, quality: config.images.quality});
           _page.close();
@@ -72,6 +91,11 @@ function capture(item, cb) {
   });
 }
 
+/**
+ * Check if a file exists through a path
+ * @param  {string}   filename Relative path to file
+ * @param  {Function} cb       callback with a boolean
+ */
 function exists(filename, cb) {
   fs.access(filename, fs.F_OK, (err) => {
     if (!err) {
@@ -82,6 +106,12 @@ function exists(filename, cb) {
   });
 }
 
+/**
+ * Delivers a relative path to a custom named file. The path is based on the
+ * item itself and information from the config file
+ * @param  {object} item Object based on the converted csv file
+ * @return {string}      Concatenated path
+ */
 function getFilename(item) {
   var filename = item.url.replace(/\//g, '');
   filename = filename.replace(/http:/g, '');
