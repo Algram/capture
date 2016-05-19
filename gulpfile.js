@@ -14,4 +14,10 @@ gulp.task('update', function() {
 
 gulp.task('watch', function() {
   gulp.watch('./**/config.csv', ['update']);
+  gulp.watch('./**/' + config.downloadDir + '/**/*', function(e) {
+    if (e.type === 'deleted') {
+      // TODO gulp.run will be deprecated with 4.0.0
+      gulp.run('update');
+    }
+  });
 });
