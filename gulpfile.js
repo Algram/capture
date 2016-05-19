@@ -1,6 +1,7 @@
 var config = require('./config.json');
-var gulp  = require('gulp');
 var capture = require('./capture');
+var gulp  = require('gulp');
+var watch = require('gulp-watch');
 
 gulp.task('update', function() {
   console.log('got updated config, running capture..');
@@ -14,10 +15,7 @@ gulp.task('update', function() {
 
 gulp.task('watch', function() {
   gulp.watch('./**/config.csv', ['update']);
-  gulp.watch('./**/' + config.downloadDir + '/**/*', function(e) {
-    if (e.type === 'deleted') {
-      // TODO gulp.run will be deprecated with 4.0.0
-      gulp.run('update');
-    }
+  watch('./**/' + config.downloadDir + '/**/*', {events: "unlink"}, function(e) {
+    gulp.run('update');
   });
 });
