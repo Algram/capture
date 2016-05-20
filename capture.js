@@ -65,15 +65,9 @@ function capture(item, cb) {
         _page.property('viewportSize', {width: config.dimensions.desktop.w, height: config.dimensions.desktop.h});
       }
 
-      // TODO Potentially obsolete if no http-auth is needed
-      if (item.auth) {
-        _page.setting('userName', config.username);
-        _page.setting('password', config.password);
-      }
-
       return _page.open(item.url);
   }).then(status => {
-      winston.info(item.url, status);
+      winston.info(item.url, item.device, item.delay, status);
 
       if (status === 'success') {
         // Set the delay to call the rendering process

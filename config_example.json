@@ -1,6 +1,4 @@
 {
-    "username": "username",
-    "password": "password",
     "resourceTimeout": 10000,
     "maxDelay": 10000,
     "images": {
