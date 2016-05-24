@@ -58,10 +58,13 @@ function capture(item, cb) {
 
       // Set screen sizes based on the config
       if (item.device === 'mobile') {
+        _page.setting('userAgent', 'Mozilla/5.0 (Linux; Android 4.0.4; Galaxy Nexus Build/IMM76B) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.133 Mobile Safari/535.19');
         _page.property('viewportSize', {width: config.dimensions.mobile.w, height: config.dimensions.mobile.h});
       } else if (item.device === 'tablet') {
+        _page.setting('userAgent', 'Mozilla/5.0 (iPad; CPU OS 7_0 like Mac OS X) AppleWebKit/537.51.1 (KHTML, like Gecko) Version/7.0 Mobile/11A465 Safari/9537.53');
         _page.property('viewportSize', {width: config.dimensions.tablet.w, height: config.dimensions.tablet.h});
       } else {
+        _page.setting('userAgent', 'Mozilla/5.0 (Windows NT 6.4; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2225.0 Safari/537.36');
         _page.property('viewportSize', {width: config.dimensions.desktop.w, height: config.dimensions.desktop.h});
       }
 
