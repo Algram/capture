@@ -15,7 +15,7 @@ gulp.task('update', function() {
 
 gulp.task('watch', function() {
   gulp.watch('./**/config.csv', ['update']);
-  watch('./**/' + config.downloadDir + '/**/*', {events: "unlink"}, function(e) {
+  watch('./**/' + config.downloadDir + '/**/*', {events: ["unlink"]}, function(e) {
     gulp.run('update');
   });
 });
