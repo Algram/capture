@@ -7,7 +7,9 @@ var currentWeekNumber = require('current-week-number');
 var winston = require('winston');
 
 // Add logfile transport to winston
-winston.add(winston.transports.File, {filename: path.join(config.logDir, 'capture.log')});
+winston.add(winston.transports.File, {
+  filename: path.join(config.logDir, 'capture.log')
+});
 
 /**
  * Takes an objected based on a csv file and starts the capturing process if
@@ -30,7 +32,7 @@ function run(data) {
         cb();
       }
     });
-  },function(error) {
+  }, function(error) {
     if (error) {
       winston.error(error);
     } else {
@@ -50,41 +52,57 @@ function capture(item, cb) {
   var _ph, _page, _outObj;
 
   phantom.create().then(ph => {
-      _ph = ph;
-      return _ph.createPage();
+    if (config.proxy !== undefined) {
+      phantom.setProxy(config.proxy);
+    }
+
+    _ph = ph;
+    return _ph.createPage();
   }).then(page => {
-      _page = page;
-      _page.setting('resourceTimeout', config.resourceTimeout);
+    _page = page;
+    _page.setting('resourceTimeout', config.resourceTimeout);
 
-      // Set screen sizes based on the config
-      if (item.device === 'mobile') {
-        _page.setting('userAgent', 'Mozilla/5.0 (Linux; Android 4.0.4; Galaxy Nexus Build/IMM76B) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.133 Mobile Safari/535.19');
-        _page.property('viewportSize', {width: config.dimensions.mobile.w, height: config.dimensions.mobile.h});
-      } else if (item.device === 'tablet') {
-        _page.setting('userAgent', 'Mozilla/5.0 (iPad; CPU OS 7_0 like Mac OS X) AppleWebKit/537.51.1 (KHTML, like Gecko) Version/7.0 Mobile/11A465 Safari/9537.53');
-        _page.property('viewportSize', {width: config.dimensions.tablet.w, height: config.dimensions.tablet.h});
-      } else {
-        _page.setting('userAgent', 'Mozilla/5.0 (Windows NT 6.4; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2225.0 Safari/537.36');
-        _page.property('viewportSize', {width: config.dimensions.desktop.w, height: config.dimensions.desktop.h});
-      }
+    // Set screen sizes based on the config
+    if (item.device === 'mobile') {
+      _page.setting('userAgent', 'Mozilla/5.0 (Linux; Android 4.0.4; Galaxy Nexus Build/IMM76B) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.133 Mobile Safari/535.19');
+      _page.property('viewportSize', {
+        width: config.dimensions.mobile.w,
+        height: config.dimensions.mobile.h
+      });
+    } else if (item.device === 'tablet') {
+      _page.setting('userAgent', 'Mozilla/5.0 (iPad; CPU OS 7_0 like Mac OS X) AppleWebKit/537.51.1 (KHTML, like Gecko) Version/7.0 Mobile/11A465 Safari/9537.53');
+      _page.property('viewportSize', {
+        width: config.dimensions.tablet.w,
+        height: config.dimensions.tablet.h
+      });
+    } else {
+      _page.setting('userAgent', 'Mozilla/5.0 (Windows NT 6.4; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2225.0 Safari/537.36');
+      _page.property('viewportSize', {
+        width: config.dimensions.desktop.w,
+        height: config.dimensions.desktop.h
+      });
+    }
 
-      return _page.open(item.url);
+    return _page.open(item.url);
   }).then(status => {
-      winston.info(item.url, item.device, item.delay, status);
+    winston.info(item.url, item.device, item.delay, status);
 
-      if (status === 'success') {
-        // Set the delay to call the rendering process
-        setTimeout(function() {
-          _page.render(getFilename(item), {format: config.images.format, quality: config.images.quality});
-          _page.close();
-          _ph.exit();
-          cb();
-        }, (item.delay > config.maxDelay) ? config.maxDelay : item.delay);
-      } else {
+    if (status === 'success') {
+      // Set the delay to call the rendering process
+      setTimeout(function() {
+        _page.render(getFilename(item), {
+          format: config.images.format,
+          quality: config.images.quality
+        });
         _page.close();
         _ph.exit();
         cb();
-      }
+      }, (item.delay > config.maxDelay) ? config.maxDelay : item.delay);
+    } else {
+      _page.close();
+      _ph.exit();
+      cb();
+    }
   });
 }
 
@@ -118,5 +136,5 @@ function getFilename(item) {
 }
 
 module.exports = {
-	run: run
+  run: run
 };

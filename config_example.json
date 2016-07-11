@@ -20,5 +20,6 @@
       }
     },
     "downloadDir": "images",
-    "logDir": ""
+    "logDir": "",
+    "proxy": ""
 }
