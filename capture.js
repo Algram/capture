@@ -114,7 +114,7 @@ function getFilename(item) {
   filename = filename.replace(/http:/g, '');
   filename = filename.replace(/https:/g, '');
 
-  return path.join(config.downloadDir, item.device, filename, filename + '_' + 'KW' + currentWeekNumber() + '_' + new Date().getFullYear() + '_' + item.delay + '.' + config.images.format);
+  return path.join(config.downloadDir, 'images', item.device, filename, filename + '_' + 'KW' + currentWeekNumber() + '_' + new Date().getFullYear() + '_' + item.delay + '.' + config.images.format);
 }
 
 module.exports = {
