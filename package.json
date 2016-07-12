@@ -1,14 +1,13 @@
 {
-  "name": "screenshot_wip",
+  "name": "Capture",
   "version": "1.0.0",
-  "description": "",
+  "description": "Taking automatic screenshots of webpages based on a csv file",
   "main": "index.js",
   "scripts": {
-    "gulp": "gulp",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "gulp": "gulp"
   },
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {
     "async": "^2.0.0-rc.5",
     "csvtojson": "^0.5.11",
