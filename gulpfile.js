@@ -1,22 +1,23 @@
-var config = require('./config.json');
-var capture = require('./capture');
-var gulp  = require('gulp');
-var watch = require('gulp-watch');
-var path = require('path');
+const config = require('./config.json');
+const capture = require('./capture');
+const gulp = require('gulp');
+const watch = require('gulp-watch');
+const path = require('path');
 
-gulp.task('update', function() {
+gulp.task('update', () => {
   console.log('got updated config, running capture..');
-  //Converter Class
-  var Converter = require("csvtojson").Converter;
-  var converter = new Converter({});
-  converter.fromFile(path.join(config.downloadDir, 'config.csv'), function(err, result){
+
+  // Converter Class
+  const Converter = require("csvtojson").Converter;
+  const converter = new Converter({});
+  converter.fromFile(path.join(config.downloadDir, 'config.csv'), (err, result) => {
     capture.run(result);
   });
 });
 
-gulp.task('watch', function() {
+gulp.task('watch', () => {
   gulp.watch(path.join(config.downloadDir, 'config.csv'), ['update']);
-  watch(config.downloadDir + '/**/*', {events: ["unlink"]}, function(e) {
+  watch(`${config.downloadDir}/**/*`, { events: ['unlink'] }, () => {
     gulp.run('update');
   });
 });
