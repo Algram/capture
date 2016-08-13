@@ -4,6 +4,7 @@ const path = require('path');
 const fs = require('fs');
 const async = require('async');
 const currentWeekNumber = require('current-week-number');
+const sanitize = require('sanitize-filename');
 const winston = require('winston');
 
 if (!fs.existsSync(config.logDir)) {
@@ -25,9 +26,9 @@ winston.remove(winston.transports.Console);
  * @return {string}      Concatenated path
  */
 function getFilename(item) {
-  let filename = item.url.replace(/\//g, '');
-  filename = filename.replace(/http:/g, '');
+  let filename = item.url.replace(/http:/g, '');
   filename = filename.replace(/https:/g, '');
+  filename = sanitize(filename);
 
   return path.join(
     config.downloadDir,
