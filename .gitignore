@@ -38,5 +38,6 @@ config.csv
 config.json
 
 # Exclude capture folder
+capture
 captures
 images

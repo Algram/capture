@@ -9,7 +9,7 @@ gulp.task('update', () => {
 
   // Converter Class
   const Converter = require("csvtojson").Converter;
-  const converter = new Converter({});
+  const converter = new Converter({ignoreEmpty: true});
   converter.fromFile(path.join(config.downloadDir, 'config.csv'), (err, result) => {
     capture.run(result);
   });
@@ -17,7 +17,9 @@ gulp.task('update', () => {
 
 gulp.task('watch', () => {
   gulp.watch(path.join(config.downloadDir, 'config.csv'), ['update']);
-  watch(`${config.downloadDir}/**/*`, { events: ['unlink'] }, () => {
+
+  // Enable usePolling on network drives. This leads to higher cpu usage
+  watch(path.join(config.downloadDir, '/**/*'), {events: ["unlink"], usePolling: true}, function(e) {
     gulp.run('update');
   });
 });

@@ -7,7 +7,7 @@ const currentWeekNumber = require('current-week-number');
 const sanitize = require('sanitize-filename');
 const winston = require('winston');
 
-if (!fs.existsSync(config.logDir)) {
+if (!fs.existsSync(config.logDir) && config.logDir !== '') {
   // Create the directory if it does not exist
   fs.mkdirSync(config.logDir);
 }
@@ -136,7 +136,7 @@ function run(data) {
     // Check if the file exists already
     exists(filename, (doesExist) => {
       if (!doesExist) {
-        capture(item, cb());
+        capture(item, cb);
       } else {
         winston.info('File %s exists already', filename);
         cb();
