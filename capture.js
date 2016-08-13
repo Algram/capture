@@ -43,7 +43,8 @@ function capture(item, cb) {
   let _page;
   let _outObj;
 
-  phantom.create().then(ph => {
+  phantom.create()
+  .then(ph => {
     if (config.proxy !== undefined) {
       phantom.setProxy(config.proxy);
     }

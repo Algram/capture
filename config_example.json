@@ -19,7 +19,16 @@
         "h": 640
       }
     },
-    "downloadDir": "images",
+    "userAgents": {
+        "desktop": "",
+        "tablet": "",
+        "mobile": ""
+    },
+    "downloadDir": "",
     "logDir": "",
-    "proxy": ""
+    "proxy": {
+        "address": "address:port",
+        "username": "",
+        "password": ""
+    }
 }
