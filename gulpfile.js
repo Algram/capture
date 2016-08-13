@@ -3,13 +3,13 @@ const capture = require('./capture');
 const gulp = require('gulp');
 const watch = require('gulp-watch');
 const path = require('path');
+const Converter = require('csvtojson').Converter;
 
 gulp.task('update', () => {
   console.log('got updated config, running capture..');
 
   // Converter Class
-  const Converter = require("csvtojson").Converter;
-  const converter = new Converter({ignoreEmpty: true});
+  const converter = new Converter({ ignoreEmpty: true });
   converter.fromFile(path.join(config.downloadDir, 'config.csv'), (err, result) => {
     capture.run(result);
   });
