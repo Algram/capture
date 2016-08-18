@@ -46,45 +46,45 @@ function getFilename(item) {
  * @param  {Function} cb   callback
  */
 function capture(item, cb) {
-  let _ph;
-  let _page;
+  let conn;
+  let page;
   const params = [];
 
   params.push(`--proxy=${config.proxy.address}`);
   params.push(`--proxy-auth=${config.proxy.username}:${config.proxy.password}`);
   params.push('--ignore-ssl-errors=true');
 
-  phantom.create()
-  .then(ph => {
-    _ph = ph;
-    return _ph.createPage();
+  phantom.create(params)
+  .then(connection => {
+    conn = connection;
+    return conn.createPage();
   })
-  .then(page => {
-    _page = page;
-    _page.setting('resourceTimeout', config.resourceTimeout);
+  .then(webpage => {
+    page = webpage;
+    page.setting('resourceTimeout', config.resourceTimeout);
 
     // Set screen sizes based on the config
     if (item.device === 'mobile') {
-      _page.setting('userAgent', config.userAgents.mobile);
-      _page.property('viewportSize', {
+      page.setting('userAgent', config.userAgents.mobile);
+      page.property('viewportSize', {
         width: config.dimensions.mobile.w,
         height: config.dimensions.mobile.h
       });
     } else if (item.device === 'tablet') {
-      _page.setting('userAgent', config.userAgents.tablet);
-      _page.property('viewportSize', {
+      page.setting('userAgent', config.userAgents.tablet);
+      page.property('viewportSize', {
         width: config.dimensions.tablet.w,
         height: config.dimensions.tablet.h
       });
     } else {
-      _page.setting('userAgent', config.userAgents.desktop);
-      _page.property('viewportSize', {
+      page.setting('userAgent', config.userAgents.desktop);
+      page.property('viewportSize', {
         width: config.dimensions.desktop.w,
         height: config.dimensions.desktop.h
       });
     }
 
-    return _page.open(item.url);
+    return page.open(item.url);
   })
   .then(status => {
     winston.info(item.url, item.device, item.delay, status);
@@ -92,17 +92,17 @@ function capture(item, cb) {
     if (status === 'success') {
       // Set the delay to call the rendering process
       setTimeout(() => {
-        _page.render(getFilename(item), {
+        page.render(getFilename(item), {
           format: config.images.format,
           quality: config.images.quality
         });
-        _page.close();
-        _ph.exit();
+        page.close();
+        conn.exit();
         cb();
       }, (item.delay > config.maxDelay) ? config.maxDelay : item.delay);
     } else {
-      _page.close();
-      _ph.exit();
+      page.close();
+      conn.exit();
       cb();
     }
   });
