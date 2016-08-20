@@ -34,7 +34,7 @@ function getFilename(item) {
     config.downloadDir,
     item.device,
     filename,
-    `${filename}_KW${currentWeekNumber()}_${new Date().getFullYear()}_${item.delay}.${config.images.format}`
+    `${filename}_KW${currentWeekNumber()}_${new Date().getFullYear()}_${item.delay}.${config.images.format}` // eslint-disable max-len
   );
 }
 
@@ -152,5 +152,5 @@ function run(data) {
 }
 
 module.exports = {
-  run: run
+  run
 };

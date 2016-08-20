@@ -4,7 +4,8 @@
   "description": "Taking automatic screenshots of webpages based on a csv file",
   "main": "index.js",
   "scripts": {
-    "gulp": "gulp"
+    "gulp": "gulp",
+    "lint": "eslint ."
   },
   "author": "",
   "license": "MIT",
@@ -17,5 +18,8 @@
     "phantom": "^2.1.2",
     "winston": "^2.2.0",
     "sanitize-filename": "^1.6.0"
+  },
+  "devDependencies": {
+    "eslint": "^3.3.1"
   }
 }
