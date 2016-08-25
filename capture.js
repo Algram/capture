@@ -26,9 +26,10 @@ winston.remove(winston.transports.Console);
  * @return {string}      Concatenated path
  */
 function getFilename(item) {
-  let filename = item.url.replace(/http:/g, '');
-  filename = filename.replace(/https:/g, '');
-  filename = sanitize(filename);
+  const filename = sanitize(item.url
+    .replace(/http:/g, '')
+    .replace(/https:/g, '')
+  );
 
   return path.join(
     config.downloadDir,
