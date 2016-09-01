@@ -25,7 +25,9 @@ gulp.task('watch', () => {
   gulp.watch(path.join(config.downloadDir, 'config.csv'), ['update']);
 
   // Enable usePolling on network drives. This leads to higher cpu usage
-  watch(path.join(config.downloadDir, '/**/*'), { events: ['unlink'], usePolling: true }, () => {
+  watch(path.join(config.downloadDir, '/**/*'), {
+    events: ['unlink'], usePolling: true, interval: 500
+  }, () => {
     gulp.run('update');
   });
 });
