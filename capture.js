@@ -95,6 +95,11 @@ function capture(item, cb) {
       conn.exit();
       cb();
     }
+  })
+  .catch(err => {
+    logger.error(err);
+    conn.exit();
+    cb();
   });
 }
 
