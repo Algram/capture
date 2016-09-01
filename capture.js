@@ -1,4 +1,5 @@
 const config = require('./config.json');
+const logger = require('./logger');
 const phantom = require('phantom');
 const path = require('path');
 const fs = require('fs');
@@ -76,7 +77,7 @@ function capture(item, cb) {
     return page.open(item.url);
   })
   .then(status => {
-    winston.info(item.url, item.device, item.delay, status);
+    logger.info(item.url, item.device, item.delay, status);
 
     if (status === 'success') {
       // Set the delay to call the rendering process
@@ -127,15 +128,12 @@ function run(data) {
       if (!doesExist) {
         capture(item, cb);
       } else {
-        winston.info('File %s exists already', filename);
         cb();
       }
     });
   }, error => {
     if (error) {
-      winston.error(error);
-    } else {
-      winston.info('All files processed.');
+      logger.error(error);
     }
   });
 }
