@@ -5,19 +5,7 @@ const fs = require('fs');
 const async = require('async');
 const currentWeekNumber = require('current-week-number');
 const sanitize = require('sanitize-filename');
-const winston = require('winston');
 
-if (!fs.existsSync(config.logDir) && config.logDir !== '') {
-  // Create the directory if it does not exist
-  fs.mkdirSync(config.logDir);
-}
-
-// Add logfile transport to winston
-winston.add(winston.transports.File, {
-  filename: path.join(config.logDir, 'capture.log')
-});
-
-winston.remove(winston.transports.Console);
 
 /**
  * Delivers a relative path to a custom named file. The path is based on the
